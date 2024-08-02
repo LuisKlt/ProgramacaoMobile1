@@ -5,4 +5,7 @@ public class teste {
         System.out.println("Olá Mundo!");
         System.out.println("Olá Mundo!");
     }
+    public void teste(){
+        //teste
+    }
 }
