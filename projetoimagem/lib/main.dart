@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             radius: 40,
             backgroundImage: NetworkImage("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/2023_Facebook_icon.svg/2048px-2023_Facebook_icon.svg.png"),
           )
-        ],),  
+        ],), 
       )
     );
   }
