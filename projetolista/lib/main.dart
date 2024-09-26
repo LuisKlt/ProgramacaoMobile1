@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projetolista/card.dart';
+import 'package:projetolista/modaladd.dart';
 import 'package:projetolista/model/pessoa.dart';
 
 void main() {
@@ -44,8 +45,8 @@ class _Tela1State extends State<Tela1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("App Lista para Widget"),
-        backgroundColor: const Color.fromARGB(255, 255, 196, 0),
+        title: Text("Lista de cadastros"),
+        backgroundColor: Colors.amber,
       ),
       body: ListView.builder(
         itemCount: lista.length,
@@ -56,6 +57,13 @@ class _Tela1State extends State<Tela1> {
             onRemove: ()=> removerItem(index),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(context: context, builder: (context) => Modaladd());
+        },
+        backgroundColor: Colors.amber,
+        child: const Icon(Icons.add)
       ),
     );
   }
