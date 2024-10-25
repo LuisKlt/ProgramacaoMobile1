@@ -1,16 +1,16 @@
 import 'package:viagemcalculo/cardCarro.dart';
-import 'package:viagemcalculo/model/carros.dart';
+import 'package:viagemcalculo/model/carro.dart';
 import 'package:flutter/material.dart';
 
 class CarroTela extends StatefulWidget {
-  final List<Carros> listaCarros;
+  final List<Carro> listaCarro;
   final Function(int) onRemove;
-  final Function(Carros) onInsert;
+  final Function(Carro) onInsert;
   const CarroTela(
       {super.key,
       required this.onInsert,
       required this.onRemove,
-      required this.listaCarros});
+      required this.listaCarro});
 
   @override
   State<CarroTela> createState() => _CarroTelaState();
@@ -31,7 +31,7 @@ class _CarroTelaState extends State<CarroTela> {
               child: Column(
                 children: [
                   const Text(
-                    "Cadastro de Carros",
+                    "Cadastro de Carro",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 25),
@@ -54,7 +54,7 @@ class _CarroTelaState extends State<CarroTela> {
                           foregroundColor: WidgetStatePropertyAll(Colors.white),
                           minimumSize: WidgetStatePropertyAll(Size(500, 50))),
                       onPressed: () {
-                        widget.onInsert(Carros(
+                        widget.onInsert(Carro(
                             nomeCarro: nomeCarroController.text,
                             autonomia: double.parse(autonomiaController.text)));
                         Navigator.pop(context);
@@ -72,11 +72,11 @@ class _CarroTelaState extends State<CarroTela> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemCount: widget.listaCarros.length,
+        itemCount: widget.listaCarro.length,
         itemBuilder: (context, index) {
           return CardCarro(
-            nomeCarro: widget.listaCarros[index].nomeCarro,
-            autonomia: widget.listaCarros[index].autonomia,
+            nomeCarro: widget.listaCarro[index].nomeCarro,
+            autonomia: widget.listaCarro[index].autonomia,
             onRemove: () => widget.onRemove(index),
           );
         },

@@ -1,9 +1,9 @@
-class Carros {
+class Carro {
   int? id;
   String nomeCarro;
   double autonomia;
   
-  Carros({
+  Carro({
     this.id,
     required this.nomeCarro,
     required this.autonomia,
@@ -17,8 +17,8 @@ class Carros {
     };
   }
 
-  factory Carros.fromMap(Map<String, dynamic> map) {
-    return Carros(
+  factory Carro.fromMap(Map<String, dynamic> map) {
+    return Carro(
       id: map['id'],
       nomeCarro: map['nomeCarro'],
       autonomia: map['autonomia'],

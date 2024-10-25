@@ -1,16 +1,16 @@
 import 'package:viagemcalculo/cardDestino.dart';
-import 'package:viagemcalculo/model/destinos.dart';
+import 'package:viagemcalculo/model/destino.dart';
 import 'package:flutter/material.dart';
 
 class DestinoTela extends StatefulWidget {
-  final List<Destinos> listaDestinos;
+  final List<Destino> listaDestino;
   final Function(int) onRemove;
-  final Function(Destinos) onInsert;
+  final Function(Destino) onInsert;
   const DestinoTela(
       {super.key,
       required this.onInsert,
       required this.onRemove,
-      required this.listaDestinos});
+      required this.listaDestino});
 
   @override
   State<DestinoTela> createState() => _DestinoTelaState();
@@ -32,7 +32,7 @@ class _DestinoTelaState extends State<DestinoTela> {
               child: Column(
                 children: [
                   const Text(
-                    "Cadastro de Destinos",
+                    "Cadastro de Destino",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 25),
@@ -56,7 +56,7 @@ class _DestinoTelaState extends State<DestinoTela> {
                           foregroundColor: WidgetStatePropertyAll(Colors.white),
                           minimumSize: WidgetStatePropertyAll(Size(500, 50))),
                       onPressed: () {
-                        widget.onInsert(Destinos(
+                        widget.onInsert(Destino(
                             nomeDestino: nomeDestinoController.text,
                             distanciaDestino:
                                 double.parse(distanciaDestinoController.text)));
@@ -75,11 +75,11 @@ class _DestinoTelaState extends State<DestinoTela> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemCount: widget.listaDestinos.length,
+        itemCount: widget.listaDestino.length,
         itemBuilder: (context, index) {
           return CardDestino(
-            nomeDestino: widget.listaDestinos[index].nomeDestino,
-            distanciaDestino: widget.listaDestinos[index].distanciaDestino,
+            nomeDestino: widget.listaDestino[index].nomeDestino,
+            distanciaDestino: widget.listaDestino[index].distanciaDestino,
             onRemove: () => widget.onRemove(index),
           );
         },

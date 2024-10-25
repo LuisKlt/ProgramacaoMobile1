@@ -1,16 +1,16 @@
-import 'package:viagemcalculo/model/carros.dart';
+import 'package:viagemcalculo/model/carro.dart';
 import 'package:viagemcalculo/model/combustivel.dart';
-import 'package:viagemcalculo/model/destinos.dart';
+import 'package:viagemcalculo/model/destino.dart';
 import 'package:flutter/material.dart';
 
 class CalculoTela extends StatefulWidget {
-  final List<Carros> carros;
-  final List<Destinos> destinos;
+  final List<Carro> carro;
+  final List<Destino> destino;
   final List<Combustivel> combustivel;
   const CalculoTela(
       {super.key,
-      required this.carros,
-      required this.destinos,
+      required this.carro,
+      required this.destino,
       required this.combustivel});
 
   @override
@@ -23,14 +23,14 @@ class _CalculoTelaState extends State<CalculoTela> {
   String? _combustivelEscolhido;
   double? _custoTotal;
   void calcular() {
-    Carros carro =
-        widget.carros.firstWhere((carro) => carro.nomeCarro == _carroEscolhido);
-    Destinos destinos = widget.destinos
-        .firstWhere((destinos) => destinos.nomeDestino == _destinoEscolhido);
+    Carro carro =
+        widget.carro.firstWhere((carro) => carro.nomeCarro == _carroEscolhido);
+    Destino destino = widget.destino
+        .firstWhere((destino) => destino.nomeDestino == _destinoEscolhido);
     Combustivel combustivel = widget.combustivel.firstWhere(
         (combustivel) => combustivel.tipoCombustivel == _combustivelEscolhido);
     setState(() {
-      _custoTotal = destinos.distanciaDestino /
+      _custoTotal = destino.distanciaDestino /
           carro.autonomia *
           combustivel.precoCombustivel;
     });
@@ -54,7 +54,7 @@ class _CalculoTelaState extends State<CalculoTela> {
                   isExpanded: true,
                   hint: const Text("Selecione um carro"),
                   value: _carroEscolhido,
-                  items: widget.carros.map((Carros carro) {
+                  items: widget.carro.map((Carro carro) {
                     return DropdownMenuItem<String>(
                       value: carro.nomeCarro,
                       child: Text(carro.nomeCarro),
@@ -73,7 +73,7 @@ class _CalculoTelaState extends State<CalculoTela> {
                   isExpanded: true,
                   hint: const Text("Selecione um Destino"),
                   value: _destinoEscolhido,
-                  items: widget.destinos.map((Destinos destino) {
+                  items: widget.destino.map((Destino destino) {
                     return DropdownMenuItem<String>(
                       value: destino.nomeDestino,
                       child: Text(destino.nomeDestino),

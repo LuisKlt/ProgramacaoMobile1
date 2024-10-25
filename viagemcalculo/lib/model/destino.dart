@@ -1,9 +1,9 @@
-class Destinos {
+class Destino {
   int? id;
   String nomeDestino;
   double distanciaDestino;
   
-  Destinos({
+  Destino({
     this.id,
     required this.nomeDestino,
     required this.distanciaDestino,
@@ -17,8 +17,8 @@ class Destinos {
     };
   }
 
-  factory Destinos.fromMap(Map<String, dynamic> map){
-    return Destinos(
+  factory Destino.fromMap(Map<String, dynamic> map){
+    return Destino(
       id: map['id'],
       nomeDestino: map['nomeDestino'], 
       distanciaDestino: map['distanciaDestino'],

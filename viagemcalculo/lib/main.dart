@@ -2,9 +2,9 @@ import 'package:viagemcalculo/calculoTela.dart';
 import 'package:viagemcalculo/carroTela.dart';
 import 'package:viagemcalculo/destinoTela.dart';
 import 'package:viagemcalculo/gasolinaTela.dart';
-import 'package:viagemcalculo/model/carros.dart';
+import 'package:viagemcalculo/model/carro.dart';
 import 'package:viagemcalculo/model/combustivel.dart';
-import 'package:viagemcalculo/model/destinos.dart';
+import 'package:viagemcalculo/model/destino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,14 +21,14 @@ class AppCustoViagem extends StatefulWidget {
 class _AppCustoViagemState extends State<AppCustoViagem> {
   int telaSelecionada = 0;
 
-  List<Carros> listaCarros = [
-    Carros(nomeCarro: "Audi RS3", autonomia: 11.2),
-    Carros(nomeCarro: "BMW M3", autonomia: 9.8),
+  List<Carro> listaCarro = [
+    Carro(nomeCarro: "Audi RS3", autonomia: 11.2),
+    Carro(nomeCarro: "BMW M3", autonomia: 9.8),
   ];
 
-  List<Destinos> listaDestinos = [
-    Destinos(nomeDestino: "Santa Maria", distanciaDestino: 240),
-    Destinos(nomeDestino: "Porto Alegre", distanciaDestino: 490),
+  List<Destino> listaDestino = [
+    Destino(nomeDestino: "Santa Maria", distanciaDestino: 240),
+    Destino(nomeDestino: "Porto Alegre", distanciaDestino: 490),
   ];
 
   List<Combustivel> listaCombustivel = [
@@ -44,25 +44,25 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
 
   void _removerCarro(int index) {
     setState(() {
-      listaCarros.removeAt(index);
+      listaCarro.removeAt(index);
     });
   }
 
-  void _inserirCarro(Carros novoCarro) {
+  void _inserirCarro(Carro novoCarro) {
     setState(() {
-      listaCarros.add(novoCarro);
+      listaCarro.add(novoCarro);
     });
   }
 
-  void _inserirDestino(Destinos novoDestino) {
+  void _inserirDestino(Destino novoDestino) {
     setState(() {
-      listaDestinos.add(novoDestino);
+      listaDestino.add(novoDestino);
     });
   }
 
   void _removerDestino(int index) {
     setState(() {
-      listaDestinos.removeAt(index);
+      listaDestino.removeAt(index);
     });
   }
 
@@ -88,15 +88,15 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
   Widget build(BuildContext context) {
     final List<Widget> listaTelas = <Widget>[
       CalculoTela(
-          carros: listaCarros,
-          destinos: listaDestinos,
+          carro: listaCarro,
+          destino: listaDestino,
           combustivel: listaCombustivel),
       CarroTela(
-          listaCarros: listaCarros,
+          listaCarro: listaCarro,
           onInsert: _inserirCarro,
           onRemove: _removerCarro),
       DestinoTela(
-          listaDestinos: listaDestinos,
+          listaDestino: listaDestino,
           onInsert: _inserirDestino,
           onRemove: _removerDestino),
       GasolinaTela(
@@ -131,7 +131,7 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.map_rounded),
-                label: 'Destinos',
+                label: 'Destino',
                 backgroundColor: Color.fromARGB(255, 196, 196, 196),
               ),
               BottomNavigationBarItem(
