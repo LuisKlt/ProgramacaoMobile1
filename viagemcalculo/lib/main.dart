@@ -1,10 +1,10 @@
 import 'package:viagemcalculo/calculoTela.dart';
 import 'package:viagemcalculo/carroTela.dart';
 import 'package:viagemcalculo/destinoTela.dart';
-import 'package:viagemcalculo/gasolinaTela.dart';
-import 'package:viagemcalculo/model/carro.dart';
-import 'package:viagemcalculo/model/combustivel.dart';
-import 'package:viagemcalculo/model/destino.dart';
+import 'package:viagemcalculo/combustivelTela.dart';
+import 'package:viagemcalculo/model/Carro.dart';
+import 'package:viagemcalculo/model/Combustivel.dart';
+import 'package:viagemcalculo/model/Destino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -22,61 +22,19 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
   int telaSelecionada = 0;
 
   List<Carro> listaCarro = [
-    Carro(nomeCarro: "Audi RS3", autonomia: 11.2),
-    Carro(nomeCarro: "BMW M3", autonomia: 9.8),
+    Carro(nome: "Audi RS3", autonomia: 11.2),
+    Carro(nome: "BMW M3", autonomia: 9.8),
   ];
 
   List<Destino> listaDestino = [
-    Destino(nomeDestino: "Santa Maria", distanciaDestino: 240),
-    Destino(nomeDestino: "Porto Alegre", distanciaDestino: 490),
+    Destino(nome: "Santa Maria", distancia: 240),
+    Destino(nome: "Porto Alegre", distancia: 490),
   ];
 
   List<Combustivel> listaCombustivel = [
-    Combustivel(
-        precoCombustivel: 6.69,
-        tipoCombustivel: "Gasolina",
-        dataPreco: DateTime.now()),
-    Combustivel(
-        precoCombustivel: 4.49,
-        tipoCombustivel: "Álcool",
-        dataPreco: DateTime.now()),
+    Combustivel(preco: 6.69, tipo: "Gasolina", data: ""),
+    Combustivel(preco: 4.49, tipo: "Álcool", data: ""),
   ];
-
-  void _removerCarro(int index) {
-    setState(() {
-      listaCarro.removeAt(index);
-    });
-  }
-
-  void _inserirCarro(Carro novoCarro) {
-    setState(() {
-      listaCarro.add(novoCarro);
-    });
-  }
-
-  void _inserirDestino(Destino novoDestino) {
-    setState(() {
-      listaDestino.add(novoDestino);
-    });
-  }
-
-  void _removerDestino(int index) {
-    setState(() {
-      listaDestino.removeAt(index);
-    });
-  }
-
-  void _inserirCombustivel(Combustivel novoCombustivel) {
-    setState(() {
-      listaCombustivel.add(novoCombustivel);
-    });
-  }
-
-  void _removerCombustivel(int index) {
-    setState(() {
-      listaCombustivel.removeAt(index);
-    });
-  }
 
   void opcaoSelecionada(int opcao) {
     setState(() {
@@ -88,21 +46,13 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
   Widget build(BuildContext context) {
     final List<Widget> listaTelas = <Widget>[
       CalculoTela(
-          carro: listaCarro,
-          destino: listaDestino,
-          combustivel: listaCombustivel),
-      CarroTela(
-          listaCarro: listaCarro,
-          onInsert: _inserirCarro,
-          onRemove: _removerCarro),
-      DestinoTela(
-          listaDestino: listaDestino,
-          onInsert: _inserirDestino,
-          onRemove: _removerDestino),
-      GasolinaTela(
-          listaCombustivel: listaCombustivel,
-          onInsert: _inserirCombustivel,
-          onRemove: _removerCombustivel),
+          //carro: listaCarro,
+          //destino: listaDestino,
+          //combustivel: listaCombustivel,
+          ),
+      CarroTela(),
+      DestinoTela(),
+      CombustivelTela(),
     ];
 
     return MaterialApp(
@@ -136,7 +86,7 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.gas_meter_rounded),
-                label: 'Gasolina',
+                label: 'Combustível',
                 backgroundColor: Color.fromARGB(255, 196, 196, 196),
               ),
             ],

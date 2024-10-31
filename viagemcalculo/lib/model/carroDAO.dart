@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:viagemcalculo/DatabaseHelper.dart';
-import 'package:viagemcalculo/model/carro.dart';
+import 'package:viagemcalculo/model/Carro.dart';
 
 class CarroDAO {
   final DatabaseHelper _dbHelper = DatabaseHelper();
@@ -13,8 +13,8 @@ class CarroDAO {
 
   Future<void> updateCarro(Carro carro) async {
     final db = await _dbHelper.database;
-    await db.update('carro', carro.toMap(),
-        where: 'id = ?', whereArgs: [carro.id]);
+    await db
+        .update('carro', carro.toMap(), where: 'id = ?', whereArgs: [carro.id]);
   }
 
   Future<void> deleteCarro(int index) async {
@@ -22,12 +22,11 @@ class CarroDAO {
     await db.delete('carro', where: 'id = ?', whereArgs: [index]);
   }
 
-  Future<List<Carro>> selectCarro() async {
+  Future<List<Carro>> selectCarros() async {
     final db = await _dbHelper.database;
     final List<Map<String, dynamic>> tipoJSON = await db.query('carro');
     return List.generate(tipoJSON.length, (i) {
       return Carro.fromMap(tipoJSON[i]);
     });
   }
-
 }

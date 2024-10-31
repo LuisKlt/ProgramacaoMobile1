@@ -1,93 +1,129 @@
-import 'package:viagemcalculo/cardCarro.dart';
-import 'package:viagemcalculo/model/carro.dart';
 import 'package:flutter/material.dart';
+import 'package:viagemcalculo/model/Carro.dart';
+import 'package:viagemcalculo/model/CarroDAO.dart';
 
 class CarroTela extends StatefulWidget {
-  final List<Carro> listaCarro;
-  final Function(int) onRemove;
-  final Function(Carro) onInsert;
-  const CarroTela(
-      {super.key,
-      required this.onInsert,
-      required this.onRemove,
-      required this.listaCarro});
+  const CarroTela({super.key});
 
   @override
   State<CarroTela> createState() => _CarroTelaState();
 }
 
 class _CarroTelaState extends State<CarroTela> {
-  final TextEditingController nomeCarroController = TextEditingController();
-  final TextEditingController autonomiaController = TextEditingController();
-  void openModal() {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            height: 500,
-            child: Padding(
-              padding: const EdgeInsets.all(35.0),
-              child: Column(
-                children: [
-                  const Text(
-                    "Cadastro de Carro",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 25),
-                  TextField(
-                    controller: nomeCarroController,
-                    decoration:
-                        const InputDecoration(label: Text("Nome do Carro")),
-                  ),
-                  TextField(
-                    controller: autonomiaController,
-                    decoration: const InputDecoration(
-                      label: Text("Consumo"),
-                    ),
-                  ),
-                  const SizedBox(height: 35),
-                  ElevatedButton(
-                      style: const ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                              Color.fromARGB(255, 0, 91, 136)),
-                          foregroundColor: WidgetStatePropertyAll(Colors.white),
-                          minimumSize: WidgetStatePropertyAll(Size(500, 50))),
-                      onPressed: () {
-                        widget.onInsert(Carro(
-                            nomeCarro: nomeCarroController.text,
-                            autonomia: double.parse(autonomiaController.text)));
-                        Navigator.pop(context);
-                        nomeCarroController.clear();
-                        autonomiaController.clear();
-                      },
-                      child: const Text("Cadastrar")),
-                ],
-              ),
-            ),
-          );
-        });
+  final CarroDAO _carroDAO = CarroDAO();
+
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _autonomiaController = TextEditingController();
+
+  List<Carro> listaCarros = [];
+  Carro? _carroAtual;
+
+  void _salvarOuEditar() async {
+    if (_carroAtual == null) {
+      await _carroDAO.insertCarro(Carro(
+        nome: _nomeController.text,
+        autonomia: double.parse(_autonomiaController.text),
+      ));
+    } else {
+      _carroAtual!.nome = _nomeController.text;
+      _carroAtual!.autonomia = double.parse(_autonomiaController.text);
+      await _carroDAO.updateCarro(_carroAtual!);
+    }
+    _nomeController.clear();
+    _autonomiaController.clear();
+    setState(() {
+      _carroAtual = null;
+    });
+    _loadCarros();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _loadCarros();
+  }
+
+  void _editarCarro(Carro carro) {
+    setState(() {
+      _carroAtual = carro;
+      _nomeController.text = carro.nome;
+      _autonomiaController.text = carro.autonomia.toString();
+    });
+  }
+
+  void _deleteCarro(int index) async {
+    await _carroDAO.deleteCarro(index);
+    _loadCarros();
+  }
+
+  void _loadCarros() async {
+    List<Carro> listaTemp = await _carroDAO.selectCarros();
+    setState(() {
+      listaCarros = listaTemp;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: widget.listaCarro.length,
-        itemBuilder: (context, index) {
-          return CardCarro(
-            nomeCarro: widget.listaCarro[index].nomeCarro,
-            autonomia: widget.listaCarro[index].autonomia,
-            onRemove: () => widget.onRemove(index),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          openModal();
-        },
-        backgroundColor: const Color.fromARGB(255, 0, 91, 136),
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.add),
+      body: Column(
+        children: [
+          SizedBox(height: 10),
+          const Text(
+            "Cadastrar Carros",
+            style: TextStyle(fontSize: 20),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _nomeController,
+              decoration: const InputDecoration(labelText: 'Nome'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _autonomiaController,
+              decoration: const InputDecoration(labelText: 'Autonomia'),
+            ),
+          ),
+          SizedBox(
+            width: 200,
+            child: ElevatedButton(
+              style: const ButtonStyle(
+                backgroundColor:
+                    WidgetStatePropertyAll(Color.fromARGB(255, 0, 91, 136)),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
+              ),
+              onPressed: _salvarOuEditar,
+              child: Text(_carroAtual == null ? 'Salvar' : 'Atualizar'),
+            ),
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: listaCarros.length,
+              itemBuilder: (context, index) {
+                final Carro carro = listaCarros[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                        'Id: ${carro.id} - Nome: ${carro.nome}\nAutonomia: ${carro.autonomia}'),
+                    trailing: IconButton(
+                      onPressed: () {
+                        _deleteCarro(carro.id!);
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
+                    onTap: () {
+                      _editarCarro(carro);
+                    },
+                  ),
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }

@@ -1,96 +1,131 @@
-import 'package:viagemcalculo/cardDestino.dart';
-import 'package:viagemcalculo/model/destino.dart';
 import 'package:flutter/material.dart';
+import 'package:viagemcalculo/model/Destino.dart';
+import 'package:viagemcalculo/model/destinoDAO.dart';
 
 class DestinoTela extends StatefulWidget {
-  final List<Destino> listaDestino;
-  final Function(int) onRemove;
-  final Function(Destino) onInsert;
-  const DestinoTela(
-      {super.key,
-      required this.onInsert,
-      required this.onRemove,
-      required this.listaDestino});
+  const DestinoTela({super.key});
 
   @override
   State<DestinoTela> createState() => _DestinoTelaState();
 }
 
 class _DestinoTelaState extends State<DestinoTela> {
-  final TextEditingController nomeDestinoController = TextEditingController();
-  final TextEditingController distanciaDestinoController =
-      TextEditingController();
-  void openModal() {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            height: 500,
-            child: Padding(
-              padding: const EdgeInsets.all(35.0),
-              child: Column(
-                children: [
-                  const Text(
-                    "Cadastro de Destino",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 25),
-                  TextField(
-                    controller: nomeDestinoController,
-                    decoration:
-                        const InputDecoration(label: Text("Nome do Destino")),
-                  ),
-                  TextField(
-                    controller: distanciaDestinoController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      label: Text("Distância do Destino"),
-                    ),
-                  ),
-                  const SizedBox(height: 35),
-                  ElevatedButton(
-                      style: const ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                              Color.fromARGB(255, 0, 91, 136)),
-                          foregroundColor: WidgetStatePropertyAll(Colors.white),
-                          minimumSize: WidgetStatePropertyAll(Size(500, 50))),
-                      onPressed: () {
-                        widget.onInsert(Destino(
-                            nomeDestino: nomeDestinoController.text,
-                            distanciaDestino:
-                                double.parse(distanciaDestinoController.text)));
-                        Navigator.pop(context);
-                        nomeDestinoController.clear();
-                        distanciaDestinoController.clear();
-                      },
-                      child: const Text("Cadastrar")),
-                ],
-              ),
-            ),
-          );
-        });
+  final DestinoDAO _destinoDAO = DestinoDAO();
+
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _distanciaController = TextEditingController();
+  final TextEditingController _cartaoController = TextEditingController();
+
+  List<Destino> _listaDestinos = [];
+  Destino? _destinoAtual;
+
+  void _salvarOuEditar() async {
+    if (_destinoAtual == null) {
+      await _destinoDAO.insertDestino(Destino(
+        nome: _nomeController.text,
+        distancia: int.parse(_distanciaController.text),
+      ));
+    } else {
+      _destinoAtual!.nome = _nomeController.text;
+      _destinoAtual!.distancia = int.parse(_distanciaController.text);
+      await _destinoDAO.updateDestino(_destinoAtual!);
+    }
+    _nomeController.clear();
+    _distanciaController.clear();
+    _cartaoController.clear();
+    setState(() {
+      _destinoAtual = null;
+    });
+    _loadDestinos();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _loadDestinos();
+  }
+
+  void _editarDestino(Destino destino) {
+    setState(() {
+      _destinoAtual = destino;
+      _nomeController.text = destino.nome;
+      _distanciaController.text = destino.distancia.toString();
+    });
+  }
+
+  void _deleteDestino(int index) async {
+    await _destinoDAO.deleteDestino(index);
+    _loadDestinos();
+  }
+
+  void _loadDestinos() async {
+    List<Destino> listaTemp = await _destinoDAO.selectDestinos();
+    setState(() {
+      _listaDestinos = listaTemp;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: widget.listaDestino.length,
-        itemBuilder: (context, index) {
-          return CardDestino(
-            nomeDestino: widget.listaDestino[index].nomeDestino,
-            distanciaDestino: widget.listaDestino[index].distanciaDestino,
-            onRemove: () => widget.onRemove(index),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          openModal();
-        },
-        backgroundColor: const Color.fromARGB(255, 0, 91, 136),
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.add),
+      body: Column(
+        children: [
+          SizedBox(height: 10),
+          const Text(
+            "Cadastrar Destinos",
+            style: TextStyle(fontSize: 20),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _nomeController,
+              decoration: const InputDecoration(labelText: 'Nome'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _distanciaController,
+              decoration: const InputDecoration(labelText: 'Distancia'),
+            ),
+          ),
+          SizedBox(
+            width: 200,
+            child: ElevatedButton(
+              style: const ButtonStyle(
+                backgroundColor:
+                    WidgetStatePropertyAll(Color.fromARGB(255, 0, 91, 136)),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
+              ),
+              onPressed: _salvarOuEditar,
+              child: Text(_destinoAtual == null ? 'Salvar' : 'Atualizar'),
+            ),
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _listaDestinos.length,
+              itemBuilder: (context, index) {
+                final Destino destino = _listaDestinos[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                        'Id: ${destino.id} - Nome: ${destino.nome}\nDistância: ${destino.distancia}'),
+                    trailing: IconButton(
+                      onPressed: () {
+                        _deleteDestino(destino.id!);
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
+                    onTap: () {
+                      _editarDestino(destino);
+                    },
+                  ),
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }

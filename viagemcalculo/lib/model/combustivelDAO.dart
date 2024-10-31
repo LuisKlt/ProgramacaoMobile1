@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:viagemcalculo/DatabaseHelper.dart';
-import 'package:viagemcalculo/model/combustivel.dart';
+import 'package:viagemcalculo/model/Combustivel.dart';
 
 class CombustivelDAO {
   final DatabaseHelper _dbHelper = DatabaseHelper();
@@ -22,12 +22,11 @@ class CombustivelDAO {
     await db.delete('combustivel', where: 'id = ?', whereArgs: [index]);
   }
 
-  Future<List<Combustivel>> selectCombustivel() async {
+  Future<List<Combustivel>> selectCombustiveis() async {
     final db = await _dbHelper.database;
     final List<Map<String, dynamic>> tipoJSON = await db.query('combustivel');
     return List.generate(tipoJSON.length, (i) {
       return Combustivel.fromMap(tipoJSON[i]);
     });
   }
-
 }

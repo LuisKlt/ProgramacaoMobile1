@@ -1,31 +1,31 @@
 class Combustivel {
   int? id;
-  double precoCombustivel;
-  String tipoCombustivel;
-  DateTime dataPreco;
-  
+  double preco;
+  String tipo;
+  String data;
+
   Combustivel({
     this.id,
-    required this.precoCombustivel,
-    required this.tipoCombustivel,
-    required this.dataPreco,
+    required this.preco,
+    required this.tipo,
+    required this.data,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'precoCombustivel': precoCombustivel,
-      'tipoCombustivel': tipoCombustivel,
-      'dataPreco': dataPreco,
+      'preco': preco,
+      'tipo': tipo,
+      'data': data,
     };
   }
 
   factory Combustivel.fromMap(Map<String, dynamic> map) {
     return Combustivel(
       id: map['id'],
-      precoCombustivel: map['precoCombustivel'],
-      tipoCombustivel: map['tipoCombustivel'],
-      dataPreco: map['dataPreco'],
+      preco: map['preco'],
+      tipo: map['tipo'],
+      data: map['data'],
     );
   }
 }
