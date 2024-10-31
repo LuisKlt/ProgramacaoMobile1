@@ -68,7 +68,7 @@ class _CarroTelaState extends State<CarroTela> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           const Text(
             "Cadastrar Carros",
             style: TextStyle(fontSize: 20),
@@ -99,7 +99,7 @@ class _CarroTelaState extends State<CarroTela> {
               child: Text(_carroAtual == null ? 'Salvar' : 'Atualizar'),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
               itemCount: listaCarros.length,

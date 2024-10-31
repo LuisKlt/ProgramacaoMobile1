@@ -20,7 +20,7 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     String dbPath = await getDatabasesPath();
     return openDatabase(
-      join(dbPath, 'c1.db'),
+      join(dbPath, 'app.db'),
       version: 1,
       onCreate: _onCreate,
     );
@@ -33,6 +33,8 @@ class DatabaseHelper {
         'CREATE TABLE combustivel(id INTEGER PRIMARY KEY AUTOINCREMENT, preco DOUBLE, tipo TEXT, data TEXT)');
     await db.execute(
         'CREATE TABLE destino(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, distancia INTEGER)');
+    await db.execute(
+        'CREATE TABLE calculo(id INTEGER PRIMARY KEY AUTOINCREMENT, custo DOUBLE)');
   }
 
   Future close() async {

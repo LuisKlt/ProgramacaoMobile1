@@ -45,14 +45,10 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> listaTelas = <Widget>[
-      CalculoTela(
-          //carro: listaCarro,
-          //destino: listaDestino,
-          //combustivel: listaCombustivel,
-          ),
-      CarroTela(),
-      DestinoTela(),
-      CombustivelTela(),
+      const CalculoTela(),
+      const CarroTela(),
+      const DestinoTela(),
+      const CombustivelTela(),
     ];
 
     return MaterialApp(

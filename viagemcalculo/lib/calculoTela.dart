@@ -1,3 +1,4 @@
+import 'package:viagemcalculo/calculoDAO.dart';
 import 'package:viagemcalculo/model/Carro.dart';
 import 'package:viagemcalculo/model/CarroDAO.dart';
 import 'package:viagemcalculo/model/Combustivel.dart';
@@ -31,6 +32,7 @@ class _CalculoTelaState extends State<CalculoTela> {
   void initState() {
     super.initState();
     carregarDados();
+    carregarCalculos();
   }
 
   Future<void> carregarDados() async {
@@ -45,7 +47,7 @@ class _CalculoTelaState extends State<CalculoTela> {
     });
   }
 
-  void calcular() {
+  void calcular() async {
     if (carroSelecionado != null &&
         destinoSelecionado != null &&
         combustivelSelecionado != null) {
@@ -56,7 +58,22 @@ class _CalculoTelaState extends State<CalculoTela> {
       setState(() {
         custoViagem = (distancia / consumo) * precoCombustivel;
       });
+
+      if (custoViagem != null) {
+        await CalculoDAO().insertCalculo(custoViagem!);
+        await carregarCalculos();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Custo registrado com sucesso!')),
+        );
+      }
     }
+  }
+
+  List<double> listaCalculos = [];
+
+  Future<void> carregarCalculos() async {
+    listaCalculos = await CalculoDAO().getCalculos();
+    setState(() {});
   }
 
   @override
@@ -66,7 +83,7 @@ class _CalculoTelaState extends State<CalculoTela> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             const Text(
               "Calcular Custo",
               style: TextStyle(fontSize: 20),
@@ -75,7 +92,7 @@ class _CalculoTelaState extends State<CalculoTela> {
               width: 360,
               child: DropdownButton<Carro>(
                 value: carroSelecionado,
-                hint: Text('Selecione um carro'),
+                hint: const Text('Selecione um carro'),
                 isExpanded: true,
                 items: carros.map((carro) {
                   return DropdownMenuItem<Carro>(
@@ -94,7 +111,7 @@ class _CalculoTelaState extends State<CalculoTela> {
               width: 360,
               child: DropdownButton<Destino>(
                 value: destinoSelecionado,
-                hint: Text('Selecione um destino'),
+                hint: const Text('Selecione um destino'),
                 isExpanded: true,
                 items: destinos.map((destino) {
                   return DropdownMenuItem<Destino>(
@@ -113,7 +130,7 @@ class _CalculoTelaState extends State<CalculoTela> {
               width: 360,
               child: DropdownButton<Combustivel>(
                 value: combustivelSelecionado,
-                hint: Text('Selecione um combustível'),
+                hint: const Text('Selecione um combustível'),
                 isExpanded: true,
                 items: combustiveis.map((combustivel) {
                   return DropdownMenuItem<Combustivel>(
@@ -141,176 +158,30 @@ class _CalculoTelaState extends State<CalculoTela> {
                 child: const Text('Calcular'),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             if (custoViagem != null)
               Text(
                 'Custo da viagem: R\$ ${custoViagem!.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: listaCalculos.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Center(
+                        child: Text(
+                            'Custo: R\$ ${listaCalculos[index].toStringAsFixed(2)}'),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-  /*
-  List<Carro> carro = [];
-  Carro? carroSelecionado;
-  final CarroDAO carroDAO = CarroDAO();
-
-  @override
-  void initState() {
-    super.initState();
-    carregarCarros();
-  }
-
-  Future<void> carregarCarros() async {
-    List<Carro> lista = await carroDAO.selectCarros();
-    setState(() {
-      carro = lista;
-    });
-  }
-  /*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Calculo de Carro'),
-      ),
-      body: Center(
-        child: carros.isEmpty
-            ? CircularProgressIndicator()
-            : DropdownButton<Carro>(
-                value: carroSelecionado,
-                hint: Text('Selecione um carro'),
-                items: carros.map((carro) {
-                  return DropdownMenuItem<Carro>(
-                    value: carro,
-                    child: Text('${carro.nome} ${carro.autonomia}'),
-                  );
-                }).toList(),
-                onChanged: (Carro? novoCarro) {
-                  setState(() {
-                    carroSelecionado = novoCarro;
-                  });
-                },
-              ),
-      ),
-    );
-  }*/
-
-  String? _carroEscolhido;
-  String? _destinoEscolhido;
-  String? _combustivelEscolhido;
-  double? _custoTotal;
-  void calcular() {
-    Carro carro =
-        carro.firstWhere((carro) => carro.nome == _carroEscolhido);
-    Destino destino = widget.destino
-        .firstWhere((destino) => destino.nome == _destinoEscolhido);
-    Combustivel combustivel = widget.combustivel
-        .firstWhere((combustivel) => combustivel.tipo == _combustivelEscolhido);
-    setState(() {
-      _custoTotal = destino.distancia / carro.autonomia * combustivel.preco;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(40),
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              const Text(
-                "Calcular Custo",
-                style: TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 35),
-              SizedBox(
-                child: carro.isEmpty
-            ? CircularProgressIndicator()
-            : DropdownButton<Carro>(
-                value: carroSelecionado,
-                hint: Text('Selecione um carro'),
-                items: carro.map((carro) {
-                  return DropdownMenuItem<Carro>(
-                    value: carro,
-                    child: Text('${carro.nome} ${carro.autonomia}'),
-                  );
-                }).toList(),
-                onChanged: (Carro? novoCarro) {
-                  setState(() {
-                    carroSelecionado = novoCarro;
-                  });
-                },
-              ),
-              ),
-              const SizedBox(height: 35),
-              SizedBox(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  hint: const Text("Selecione um Destino"),
-                  value: _destinoEscolhido,
-                  items: widget.destino.map((Destino destino) {
-                    return DropdownMenuItem<String>(
-                      value: destino.nome,
-                      child: Text(destino.nome),
-                    );
-                  }).toList(),
-                  onChanged: (String? novoDestino) {
-                    setState(() {
-                      _destinoEscolhido = novoDestino;
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 35),
-              SizedBox(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  hint: const Text("Selecione um Combustível"),
-                  value: _combustivelEscolhido,
-                  items: widget.combustivel.map((Combustivel combustivel) {
-                    return DropdownMenuItem<String>(
-                      value: combustivel.tipo,
-                      child: Text(combustivel.tipo),
-                    );
-                  }).toList(),
-                  onChanged: (String? novoCombustivel) {
-                    setState(() {
-                      _combustivelEscolhido = novoCombustivel;
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 35),
-              SizedBox(
-                width: 500,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: calcular,
-                  style: const ButtonStyle(
-                    backgroundColor:
-                        WidgetStatePropertyAll(Color.fromARGB(255, 0, 91, 136)),
-                    foregroundColor: WidgetStatePropertyAll(Colors.white),
-                  ),
-                  child: const Text('Calcular'),
-                ),
-              ),
-              const SizedBox(height: 35),
-              if (_custoTotal != null)
-                SizedBox(
-                  child: Text(
-                    'Valor total BRL: $_custoTotal',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }*/
 }
