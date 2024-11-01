@@ -1,7 +1,6 @@
-import 'package:viagemcalculo/calculoTela.dart';
-import 'package:viagemcalculo/carroTela.dart';
-import 'package:viagemcalculo/destinoTela.dart';
-import 'package:viagemcalculo/combustivelTela.dart';
+
+import 'package:appfipeapi/apiTela.dart';
+import 'package:appfipeapi/carroTela.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,18 +26,16 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> listaTelas = <Widget>[
-      const CalculoTela(),
+      const ApiTela(),
       const CarroTela(),
-      const DestinoTela(),
-      const CombustivelTela(),
     ];
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: "App Custo Viagem",
+        title: "Fipe App",
         home: Scaffold(
           appBar: AppBar(
-            title: const Text("App Custo Viagem"),
+            title: const Text("Fipe App"),
             backgroundColor: const Color.fromARGB(255, 0, 91, 136),
             foregroundColor: Colors.white,
           ),
@@ -49,22 +46,12 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.calculate_rounded),
-                label: 'Calculo',
+                label: 'Tabela Fipe',
                 backgroundColor: Color.fromARGB(255, 196, 196, 196),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.car_rental_rounded),
                 label: 'Carro',
-                backgroundColor: Color.fromARGB(255, 196, 196, 196),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.map_rounded),
-                label: 'Destino',
-                backgroundColor: Color.fromARGB(255, 196, 196, 196),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.gas_meter_rounded),
-                label: 'Combustível',
                 backgroundColor: Color.fromARGB(255, 196, 196, 196),
               ),
             ],
