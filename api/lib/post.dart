@@ -1,32 +1,17 @@
-class Post {
-  int userId;
-  int id;
-  String title;
-  String body;
+class CarModel {
+  final String nome;
 
-  Post({
-    required this.userId,
-    required this.id,
-    required this.title,
-    required this.body,
-  });
+  CarModel({required this.nome});
 
-  factory Post.fromMap(Map<String, dynamic> mapa){
-    return Post(
-      userId: mapa['userId'],
-      id: mapa['id'],
-      title: mapa['title'],
-      body: mapa['body'],
+  factory CarModel.fromJson(Map<String, dynamic> json) {
+    return CarModel(
+      nome: json['nome'],
     );
   }
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
-      'id': id,
-      'title': title,
-      'body': body,
+      'nome': nome,
     };
   }
-
 }

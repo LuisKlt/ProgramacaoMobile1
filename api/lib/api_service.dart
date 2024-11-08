@@ -3,50 +3,23 @@ import 'package:api/post.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = 'https://jsonplaceholder.typicode.com/posts';
+  final String baseUrl =
+      'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos';
 
-  Future<List<Post>> getPosts() async{
+  Future<List<CarModel>> getCarModels() async {
     final response = await http.get(Uri.parse(baseUrl));
-    if(response.statusCode == 200){
-      List<dynamic> body = jsonDecode(response.body);
-      return body.map((dynamic item){
-        return Post.fromMap(item);
+
+    if (response.statusCode == 200) {
+      // Decodifica o JSON da resposta.
+      var data = jsonDecode(response.body);
+      // A chave 'modelos' contém a lista dos modelos de carro.
+      List<dynamic> modelosJson = data['modelos'];
+
+      // Mapeia a lista de modelos para uma lista de objetos CarModel.
+      return modelosJson.map((dynamic item) {
+        return CarModel.fromJson(item);
       }).toList();
     }
-    return [];
+    return []; // Retorna uma lista vazia caso a requisição falhe.
   }
-
-  Future<Post?> createPost(Post post) async{
-    final response = await http.post(
-      Uri.parse(baseUrl),
-      headers: {"Content-type":"application/json"},
-      body: jsonEncode(post.toMap()),
-    );
-    if(response.statusCode == 201){
-      print("Dado criado com sucesso");
-      return Post.fromMap(jsonDecode(response.body));
-    }
-    return null;
-  }
-  
-  Future<Post?> updatePost(Post post, int id) async{
-    final response = await http.put(
-      Uri.parse('$baseUrl/$id'),
-      headers: {"Content-type": "application/json"},
-      body: jsonEncode(post.toMap())
-    );
-    if (response.statusCode == 200){
-      print("Dado atualizado com sucesso");
-      return Post.fromMap(jsonDecode(response.body));
-    }
-    return null;
-  }
-
-  Future<void> deletePost(int id) async{
-    final response = await http.delete(Uri.parse('$baseUrl/$id'));
-    if(response.statusCode == 200){
-      print("Dado deletado com sucesso");
-    }
-  }
-
 }

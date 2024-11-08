@@ -1,20 +1,19 @@
-
-import 'package:appfipeapi/apiTela.dart';
+import 'package:appfipeapi/marcaSearch.dart';
 import 'package:appfipeapi/carroTela.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const AppCustoViagem());
+  runApp(const FipeApp());
 }
 
-class AppCustoViagem extends StatefulWidget {
-  const AppCustoViagem({super.key});
+class FipeApp extends StatefulWidget {
+  const FipeApp({super.key});
 
   @override
-  State<AppCustoViagem> createState() => _AppCustoViagemState();
+  State<FipeApp> createState() => _FipeAppState();
 }
 
-class _AppCustoViagemState extends State<AppCustoViagem> {
+class _FipeAppState extends State<FipeApp> {
   int telaSelecionada = 0;
 
   void opcaoSelecionada(int opcao) {
@@ -26,7 +25,7 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> listaTelas = <Widget>[
-      const ApiTela(),
+      const MarcaSearch(),
       const CarroTela(),
     ];
 
@@ -51,7 +50,7 @@ class _AppCustoViagemState extends State<AppCustoViagem> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.car_rental_rounded),
-                label: 'Carro',
+                label: 'Carros',
                 backgroundColor: Color.fromARGB(255, 196, 196, 196),
               ),
             ],

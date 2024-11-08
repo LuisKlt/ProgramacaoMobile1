@@ -29,12 +29,6 @@ class DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute(
         'CREATE TABLE carro(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, autonomia DOUBLE)');
-    await db.execute(
-        'CREATE TABLE combustivel(id INTEGER PRIMARY KEY AUTOINCREMENT, preco DOUBLE, tipo TEXT, data TEXT)');
-    await db.execute(
-        'CREATE TABLE destino(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, distancia INTEGER)');
-    await db.execute(
-        'CREATE TABLE calculo(id INTEGER PRIMARY KEY AUTOINCREMENT, custo DOUBLE)');
   }
 
   Future close() async {
