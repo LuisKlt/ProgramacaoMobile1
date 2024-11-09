@@ -1,30 +1,32 @@
+import 'package:appfipeapi/ano.dart';
 import 'package:appfipeapi/apiService.dart';
-import 'package:appfipeapi/modeloSearch.dart';
-import 'package:appfipeapi/marca.dart';
+import 'package:appfipeapi/main.dart';
 import 'package:flutter/material.dart';
 
-class MarcaSearch extends StatefulWidget {
-  const MarcaSearch({super.key});
+class AnoSearch extends StatefulWidget {
+  final String marca;
+  final int modelo;
+  const AnoSearch({super.key, required this.marca, required this.modelo});
 
   @override
-  MarcaSearchState createState() => MarcaSearchState();
+  AnoSearchState createState() => AnoSearchState();
 }
 
-class MarcaSearchState extends State<MarcaSearch> {
+class AnoSearchState extends State<AnoSearch> {
   final ApiService apiService = ApiService();
-  List<Marca> allBrands = [];
-  List<Marca> filteredBrands = [];
+  List<Ano> allBrands = [];
+  List<Ano> filteredBrands = [];
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadCarBrands();
+    _loadAnos();
     searchController.addListener(_filterBrands);
   }
 
-  Future<void> _loadCarBrands() async {
-    allBrands = await apiService.getMarcas();
+  Future<void> _loadAnos() async {
+    allBrands = await apiService.getAnos(widget.marca, widget.modelo);
     setState(() {
       filteredBrands = allBrands;
     });
@@ -49,6 +51,19 @@ class MarcaSearchState extends State<MarcaSearch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const FipeApp()),
+            );
+          },
+        ),
+        title: const Text('Fipe App'),
+        backgroundColor: const Color.fromARGB(255, 0, 91, 136),
+        foregroundColor: Colors.white,
+      ),
       body: Column(
         children: [
           Padding(
@@ -56,7 +71,7 @@ class MarcaSearchState extends State<MarcaSearch> {
             child: TextField(
               controller: searchController,
               decoration: const InputDecoration(
-                labelText: 'Buscar marca',
+                labelText: 'Buscar ano',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
@@ -71,9 +86,7 @@ class MarcaSearchState extends State<MarcaSearch> {
                   title: Text(brand.nome),
                   onTap: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ModeloSearch(marca: brand.codigo)),
+                      MaterialPageRoute(builder: (context) => const FipeApp()),
                     );
                   },
                 );

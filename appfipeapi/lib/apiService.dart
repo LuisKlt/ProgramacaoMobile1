@@ -1,13 +1,13 @@
 import 'dart:convert';
+import 'package:appfipeapi/ano.dart';
 import 'package:appfipeapi/marca.dart';
 import 'package:appfipeapi/modelo.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = 'https://parallelum.com.br/fipe/api/v1/carros/marcas';
 
   Future<List<Marca>> getMarcas() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse('https://parallelum.com.br/fipe/api/v1/carros/marcas'));
 
     if (response.statusCode == 200) {
       List<dynamic> modelosJson = jsonDecode(response.body);
@@ -18,21 +18,32 @@ class ApiService {
     return [];
   }
 
-  Future<List<Modelo>> getModelos() async {
+  Future<List<Modelo>> getModelos(String codigoMarca) async {
     final response = await http.get(Uri.parse(
-        'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos'));
+        'https://parallelum.com.br/fipe/api/v1/carros/marcas/$codigoMarca/modelos'));
 
     if (response.statusCode == 200) {
-      // Decodifica o JSON da resposta.
       var data = jsonDecode(response.body);
-      // A chave 'modelos' contém a lista dos modelos de carro.
       List<dynamic> modelosJson = data['modelos'];
-
-      // Mapeia a lista de modelos para uma lista de objetos CarModel.
       return modelosJson.map((dynamic item) {
         return Modelo.fromJson(item);
       }).toList();
     }
-    return []; // Retorna uma lista vazia caso a requisição falhe.
+    return [];
   }
+
+  Future<List<Ano>> getAnos(String codigoMarca, int codigoModelo) async {
+    final response = await http.get(Uri.parse(
+        'https://parallelum.com.br/fipe/api/v1/carros/marcas/10/modelos/$codigoModelo/anos'));
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      List<dynamic> modelosJson = data['anos'];
+      return modelosJson.map((dynamic item) {
+        return Ano.fromJson(item);
+      }).toList();
+    }
+    return [];
+  }
+
 }

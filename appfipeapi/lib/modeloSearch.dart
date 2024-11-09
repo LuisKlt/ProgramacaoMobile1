@@ -1,10 +1,12 @@
+import 'package:appfipeapi/anoSearch.dart';
 import 'package:appfipeapi/apiService.dart';
-import 'package:appfipeapi/marcaSearch.dart';
+import 'package:appfipeapi/main.dart';
 import 'package:appfipeapi/modelo.dart';
 import 'package:flutter/material.dart';
 
 class ModeloSearch extends StatefulWidget {
-  const ModeloSearch({super.key});
+  final String marca;
+  const ModeloSearch({super.key, required this.marca});
 
   @override
   ModeloSearchState createState() => ModeloSearchState();
@@ -19,12 +21,12 @@ class ModeloSearchState extends State<ModeloSearch> {
   @override
   void initState() {
     super.initState();
-    _loadCarBrands();
+    _loadModelos();
     searchController.addListener(_filterBrands);
   }
 
-  Future<void> _loadCarBrands() async {
-    allBrands = await apiService.getModelos();
+  Future<void> _loadModelos() async {
+    allBrands = await apiService.getModelos(widget.marca);
     setState(() {
       filteredBrands = allBrands;
     });
@@ -49,7 +51,19 @@ class ModeloSearchState extends State<ModeloSearch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pesquisar Modelos')),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const FipeApp()),
+            );
+          },
+        ),
+        title: const Text('Fipe App'),
+        backgroundColor: const Color.fromARGB(255, 0, 91, 136),
+        foregroundColor: Colors.white,
+      ),
       body: Column(
         children: [
           Padding(
@@ -72,8 +86,7 @@ class ModeloSearchState extends State<ModeloSearch> {
                   title: Text(brand.nome),
                   onTap: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) => const MarcaSearch()),
+                      MaterialPageRoute(builder: (context) => AnoSearch(marca: widget.marca, modelo: brand.codigo)),
                     );
                   },
                 );
